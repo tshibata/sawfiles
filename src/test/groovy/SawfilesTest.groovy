@@ -39,4 +39,19 @@ class SawfilesTest extends Specification {
 		then:
 		["unzip", "-l", "build/tmp/build/tmp/a.zip"].execute().text.contains("newfile")
 	}
+	def "modify a zip in a tar with one more closure"() {
+        setup:
+		["rm", "-f", "build/tmp/a.zip"].execute().waitFor()
+		["zip", "build/tmp/a.zip", "src/test/resources/hello.txt"].execute().waitFor()
+		["rm", "-f", "build/tmp/nested.tar"].execute().waitFor()
+		["tar", "cf", "build/tmp/nested.tar", "build/tmp/a.zip"].execute().waitFor()
+
+		when:
+		Sawfiles.main("src/test/resources/nested2.dsl")
+
+		["tar", "xfC", "build/tmp/nested.tar", "build/tmp"].execute().waitFor()
+
+		then:
+		["unzip", "-l", "build/tmp/build/tmp/a.zip"].execute().text.contains("newfile")
+	}
 }
