@@ -1,9 +1,9 @@
 import java.nio.file.Files
 
-class Sawfiles {
+class SawfilesContext {
 	File workspace
 
-	Sawfiles(File workspace) {
+	SawfilesContext(File workspace) {
 		this.workspace = workspace
 	}
 
@@ -17,7 +17,7 @@ class Sawfiles {
 		def w = Files.createTempDirectory("sawfiles-").toFile()
 		new ProcessBuilder(fileTypes[extension][0](abs)).directory(w).start().waitFor()
 		closure.resolveStrategy = Closure.DELEGATE_FIRST
-		closure.delegate = new Sawfiles(w)
+		closure.delegate = new SawfilesContext(w)
 		closure()
 		new ProcessBuilder(fileTypes[extension][1](abs)).directory(w).start().waitFor()
 	}
@@ -48,16 +48,13 @@ class Sawfiles {
 	}
 
 	String toString() {
-		return "Sawfiles(" + workspace + ")"
-	}
-
-    static void main(String[] args) {
-		GroovyShell shell = new GroovyShell()
-		Script script = shell.parse(new java.io.FileReader(args[0]))
-
-		script.run()
-		script.operation.delegate = new Sawfiles(new File(System.getProperty("user.dir")))
-		script.operation()
+		return "SawfilesContext(" + workspace + ")"
 	}
 }
 
+GroovyShell shell = new GroovyShell()
+Script script = shell.parse(new java.io.FileReader(args[0]))
+
+script.run()
+script.operation.delegate = new SawfilesContext(new File(System.getProperty("user.dir")))
+script.operation()
