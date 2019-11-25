@@ -54,4 +54,15 @@ class SawfilesTest extends Specification {
 		then:
 		["unzip", "-l", "build/tmp/build/tmp/a.zip"].execute().text.contains("newfile")
 	}
+	def "copy *.txt"() {
+        setup:
+		["rm", "-fr", "build/tmp/text"].execute().waitFor()
+		["mkdir", "build/tmp/text"].execute().waitFor()
+
+		when:
+		Sawfiles.main("src/test/resources/glob.dsl")
+
+		then:
+		0 < ["ls", "build/tmp/text"].execute().text.length()
+	}
 }
