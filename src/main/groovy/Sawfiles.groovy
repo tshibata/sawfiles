@@ -16,13 +16,14 @@ class SawfilesContext {
 	]
 
 	void operate(String path, String extension, Closure closure) {
-		def abs = new File(workspace, path).getAbsoluteFile().getPath()
+		def abs = new File(workspace, path).getAbsoluteFile()
 		def w = Files.createTempDirectory("sawfiles-").toFile()
-		new ProcessBuilder(fileTypes[extension][0](abs)).directory(w).start().waitFor()
+		new ProcessBuilder(fileTypes[extension][0](abs.getPath())).directory(w).start().waitFor()
 		closure.resolveStrategy = Closure.DELEGATE_FIRST
 		closure.delegate = new SawfilesContext(w)
 		closure()
-		new ProcessBuilder(fileTypes[extension][1](abs)).directory(w).start().waitFor()
+		abs.delete()
+		new ProcessBuilder(fileTypes[extension][1](abs.getPath())).directory(w).start().waitFor()
 	}
 
 	/*
