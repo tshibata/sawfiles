@@ -22,18 +22,29 @@ class Sawfiles {
 		new ProcessBuilder(fileTypes[extension][1](abs)).directory(w).start().waitFor()
 	}
 
-	void inside(String path, Closure closure) {
-		operate(path, path.substring(path.lastIndexOf(".")), closure)
-	}
-
-	void inside(Map files, Closure closure) {
-		files.each { path, extension ->
-			operate(path, extension, closure)
+	/*
+	 * a work-around for following two methods
+	 *  void inside(String path, Closure closure)
+	 *  void inside(Map files, Closure c)
+	 */
+	Closure getInside() {
+		return {target, closure ->
+			if (target in Map) {
+				target.each { path, extension ->
+					operate(path, extension, closure)
+				}
+			} else {
+				operate(target, target.substring(target.lastIndexOf(".")), closure)
+			}
 		}
 	}
 
-	void execute(String... args) {
-		new ProcessBuilder(args).directory(workspace).start().waitFor()
+	/*
+	 * a work-around for following method
+	 *  void execute(String... args)
+	 */
+	Closure getExecute() {
+		return {String... args -> new ProcessBuilder(args).directory(workspace).start().waitFor()}
 	}
 
 	String toString() {
