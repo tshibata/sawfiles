@@ -12,7 +12,7 @@ class SawfilesContext {
 
 	def static fileTypes = [
 		".tar": [{file -> ["tar", "xf", file]}, {file -> ["tar", "cf", file, "."]}],
-		".zip": [{file -> ["unzip", file]}, {file -> ["zip", file, "-R", "*"]}]
+		".zip": [{file -> ["unzip", file]}, {file -> ["zip", file, "-r", "."]}]
 	]
 
 	void operate(String path, String extension, Closure closure) {
