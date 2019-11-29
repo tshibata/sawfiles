@@ -6,9 +6,9 @@ For example, when you want to remove tmp directories in zip files in a tar file:
 ```
 operation = {
 	inside "zips.tar", {
-		list(glob("**/*.zip")) each {zip ->
+		list(glob("**.zip")) each {zip ->
 			inside zip, {
-				list(glob("**/tmp")) each {tmp ->
+				list(glob("tmp") | glob("**/tmp")) each {tmp ->
 					execute("rm", "-fr", tmp)
 				}
 			}
