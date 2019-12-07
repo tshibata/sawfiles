@@ -128,7 +128,7 @@ class SawfilesFilter {
 
 GroovyShell shell = new GroovyShell()
 Script script = shell.parse(new java.io.FileReader(args[0]))
-
+script.args = args[1..<args.length]
 script.run()
 script.operation.delegate = new SawfilesContext(new File(System.getProperty("user.dir")))
 script.operation()
